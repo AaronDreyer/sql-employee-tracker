@@ -6,8 +6,8 @@ const connection = mysql.createConnection({
     host: 'localhost',
     port: 3001,
     user: 'root',
-    password: 'password',
-    database: 'company_db'
+    password: 'CashMoney$396',
+    database: 'company_db',
 });
 
 connection.connect(err => {
@@ -100,7 +100,40 @@ const addDepartment = () => {
 };
 
 const addRole = () => {
-   
+    connection.query('SELECT name FROM department', (err, res) => {
+        if (err) throw err;
+
+        const departmentNames = res.map(department => department.name);
+    
+   inquirer.prompt([
+    {
+        name: 'role',
+        type: 'input',
+        message: 'Please enter your role in the company.'
+    },
+    {
+        name: 'salary',
+        type: 'input',
+        message: 'Please enter your salary.'
+    },
+    {
+        name: 'department',
+        type: 'list',
+        message: 'Please select which department your role is in.',
+        choices: departmentNames
+    }
+   ]).then(answer => {
+        connection.query(
+                'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)',
+                [answer.role, answer.salary, answer.department],
+                function (err, res) {
+                    if (err) throw err;
+                    console.log('Role added!');
+                    startMenu();
+                }
+            );
+        })
+    });
 };
 
 const addEmployee = () => {

@@ -1,5 +1,5 @@
 INSERT INTO department (name)
-VALUES ("Management")
+VALUES ("Management"),
         ("Sales"),
         ("Accounting"),
         ("Human Resources"),
@@ -9,7 +9,7 @@ VALUES ("Management")
 
 INSERT INTO role (title, salary, department_id)
 VALUES ("Branch Manger", 70000, 1),
-        ("Assistant to the Branch Manager", 60000, 1),
+        ("Assistant to Branch Manager", 60000, 1),
         ("Salesman", 50000, 2),
         ("Accountant", 65000, 3),
         ("Human Resources Representative", 55000, 4),
