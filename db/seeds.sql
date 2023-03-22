@@ -10,12 +10,12 @@ VALUES ("Management")
 INSERT INTO role (title, salary, department_id)
 VALUES ("Branch Manger", 70000, 1),
         ("Assistant to the Branch Manager", 60000, 1),
-        ("Salesman", 50000, 3),
-        ("Accountant", 65000, 4),
-        ("Human Resources Representative", 55000, 5),
-        ("Customer Service Specialist", 55000, 6),
-        ("QA Director", 50000, 7),
-        ("Receptionist", 45000, 8);
+        ("Salesman", 50000, 2),
+        ("Accountant", 65000, 3),
+        ("Human Resources Representative", 55000, 4),
+        ("Customer Service Specialist", 55000, 5),
+        ("QA Director", 50000, 6),
+        ("Receptionist", 45000, 7);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES ("Michael", "Scott", 1, 1),

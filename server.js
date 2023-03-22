@@ -100,67 +100,13 @@ const addDepartment = () => {
 };
 
 const addRole = () => {
-    inquirer.prompt([
-        {
-            name: 'role',
-            type: 'input',
-            message: 'Please enter your role.'
-        },
-        {
-            name: 'salary',
-            type: 'input',
-            message: 'Please enter your salary.'
-        },
-        {
-            name: 'department_id',
-            type: 'list',
-            message: 'Please choose which department you belong in.'
-            // Need to add a prompt to pull from seeds.sql
-        },
-    ])
-    .then(answer => {
-        connection.query(
-            'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)'
-            [answer.role, answer.salary, answer.department_id],
-            function (err, res) {
-                if (err) throw err;
-                console.log('Role successfully added!');
-                startMenu;
-            }
-        );
-    });
+   
 };
 
 const addEmployee = () => {
-    inquirer.prompt([
-        {
-            name: 'first_name',
-            type: 'input',
-            message: 'Please enter your first name.'
-        },
-        {
-            name: 'last_name',
-            type: 'input',
-            message: 'Please enter your last name.'
-        },
-        {
-            name: 'role_id',
-            type: 'list',
-            message: 'Please choose your role.',
-        },
-        {
-            name: 'manager_id',
-            type: 'list',
-            message: 'Please choose your corresponding Manager.'
-            // Need to add a prompt to pull from seeds.sql
-        }
-    ])
-    .then(answer => {
-        connection.query(
-        )
-    })
+        
 };
 
 const updateEmployeeRole = () => {
-
+    
 };
