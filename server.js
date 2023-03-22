@@ -4,7 +4,7 @@ const cTable = require('console.table');
 
 const connection = mysql.createConnection({
     host: 'localhost',
-    port: 3001,
+    port: 3306,
     user: 'root',
     password: 'CashMoney$396',
     database: 'company_db',
@@ -62,10 +62,11 @@ const viewAllDepartments = () => {
 };
 
 const viewAllRoles = () => {
-    connection.query('SELECT * FROM role', function (err, res) {
+    connection.query('SELECT * FROM role', 
+    function (err, res) {
         if (err) throw err;
         console.table(res);
-        startMenu;
+        startMenu();
     });
 };
 
@@ -73,7 +74,7 @@ const viewAllEmployees = () => {
     connection.query('SELECT * FROM employee', function (err, res) {
         if (err) throw err;
         console.table(res);
-        startMenu;
+        startMenu();
     });
 };
 
@@ -93,17 +94,20 @@ const addDepartment = () => {
             function (err, res) {
                 if (err) throw err;
                 console.log('Department successfully added!');
-                startMenu;
+                startMenu();
             }
         );
     });
 };
 
 const addRole = () => {
-    connection.query('SELECT name FROM department', (err, res) => {
+    connection.query('SELECT id, name FROM department', (err, res) => {
         if (err) throw err;
 
-        const departmentNames = res.map(department => department.name);
+        const departmentNames = res.reduce((acc, curr) => {
+            acc[curr.name] = curr.id;
+            return acc;
+        }, {});
     
    inquirer.prompt([
     {
@@ -120,12 +124,13 @@ const addRole = () => {
         name: 'department',
         type: 'list',
         message: 'Please select which department your role is in.',
-        choices: departmentNames
+        choices: Object.keys(departmentNames),
     }
    ]).then(answer => {
+    const departmentID = departmentNames[answer.department]
         connection.query(
                 'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)',
-                [answer.role, answer.salary, answer.department],
+                [answer.role, answer.salary, departmentID],
                 function (err, res) {
                     if (err) throw err;
                     console.log('Role added!');
