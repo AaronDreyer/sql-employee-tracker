@@ -127,7 +127,7 @@ const addRole = () => {
         choices: Object.keys(departmentNames),
     }
    ]).then(answer => {
-    const departmentID = departmentNames[answer.department]
+    const departmentID = departmentNames[answer.department];
         connection.query(
                 'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)',
                 [answer.role, answer.salary, departmentID],
@@ -142,7 +142,65 @@ const addRole = () => {
 };
 
 const addEmployee = () => {
-        
+    connection.query('SELECT id, name FROM role', (err, res) => {
+        if (err) throw err;
+
+        const roleNames = res.reduce((acc, curr) => {
+            acc[curr.name] = curr.id;
+            return acc;
+        }, {});
+
+    connection.query('SELECT id, first_name, last_name FROM employee WHERE manager_id IS NULL', (err, res) => {
+        if (err) throw err;
+
+        const managers = res.reduce((acc, curr) => {
+            acc['${curr.first_name} ${curr.last_name}'] = curr.id;
+            return acc;
+        }, {});
+    
+        inquirer.prompt([
+            {
+                name: 'firstName',
+                type: 'input',
+                message: "Please enter your first name."
+            },
+            {
+                name: 'lastName',
+                type: 'input',
+                message: "Please enter your last name."
+            },
+            {
+                name: 'role',
+                type: 'list',
+                message: 'Please select your corresponding role in the company.',
+                choices: Object.keys(roleNames),
+            },
+            {
+                name: 'manager',
+                type: 'list',
+                message: 'Please select your manager from the team roster',
+                choices: Object.keys(managers),
+            }
+        ]).then(answer => {
+            const roleID = roleNames[answer.role];
+            const managerID = managers[answer.manager];
+            connection.query(
+                'INSERT INTO employee SET ?',
+                {
+                  first_name: answer.firstName,
+                  last_name: answer.lastName,
+                  role_id: roleID,
+                  manager_id: managerID
+                },
+                function (err, res) {
+                  if (err) throw err;
+      
+                  console.log('Employee added!');
+                  startMenu();
+                });
+            });
+        });
+    });
 };
 
 const updateEmployeeRole = () => {
