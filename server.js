@@ -71,7 +71,20 @@ const viewAllRoles = () => {
 };
 
 const viewAllEmployees = () => {
-    connection.query('SELECT * FROM employee', function (err, res) {
+    connection.query(`
+    SELECT 
+      e.id, 
+      e.first_name, 
+      e.last_name, 
+      r.title, 
+      d.name AS department, 
+      r.salary, 
+      CONCAT(m.first_name, ' ', m.last_name) AS manager
+    FROM employee e
+    JOIN role r ON e.role_id = r.id
+    JOIN department d ON r.department_id = d.id
+    LEFT JOIN employee m ON e.manager_id = m.id
+  `, (err, res) => {
         if (err) throw err;
         console.table(res);
         startMenu();
@@ -206,5 +219,52 @@ const addEmployee = () => {
 };
 
 const updateEmployeeRole = () => {
-    connection.query('SELECT id, ')
-};
+    connection.query('SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employee', (err, res) => {
+        if (err) throw err;
+    
+        const employees = res.reduce((acc, curr) => {
+          acc[curr.name] = curr.id;
+          return acc;
+        }, {});
+    
+        connection.query('SELECT id, title FROM role', (err, res) => {
+          if (err) throw err;
+    
+          const roles = res.reduce((acc, curr) => {
+            acc[curr.title] = curr.id;
+            return acc;
+          }, {});
+    
+          inquirer.prompt([
+            {
+              name: 'employee',
+              type: 'list',
+              message: 'Select the employee to update:',
+              choices: Object.keys(employees),
+            },
+            {
+              name: 'role',
+              type: 'list',
+              message: 'Select the new role:',
+              choices: Object.keys(roles),
+            },
+          ]).then(answer => {
+            const employeeId = employees[answer.employee];
+            const roleId = roles[answer.role];
+    
+            connection.query(
+              'UPDATE employee SET role_id = ? WHERE id = ?',
+              [roleId, employeeId],
+              (err, res) => {
+                if (err) throw err;
+                console.log(`Role updated for ${answer.employee}`);
+                startMenu();
+              }
+            );
+          });
+        });
+      });
+    };
+
+
+    
