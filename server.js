@@ -29,6 +29,9 @@ const startMenu = () => {
             'Add a role',
             'Add an employee',
             'Update an employee role',
+            'Delete a department',
+            'Delete a role',
+            'Delete an employee',
             'Exit',
         ],
     })
@@ -47,6 +50,12 @@ const startMenu = () => {
             addEmployee();
         } else if (response.menu === 'Update an employee role') {
             updateEmployeeRole();
+        } else if (response.menu === 'Delete a department') {
+          deleteDepartment();
+        } else if (response.menu === 'Delete a role') {
+          deleteRole();
+        } else if (response.menu === 'Delete an employee') {
+          deleteEmployee();
         } else {
             connection.end();
         }
@@ -273,4 +282,125 @@ const updateEmployeeRole = () => {
       });
     };
 
-
+const deleteDepartment = () => {
+    connection.query('SELECT * FROM department', (err, res) => {
+      if (err) throw err;
+      const departments = res.map((department) => ({
+        name: department.name,
+        value: department.id,
+      }));
+      inquirer
+        .prompt([
+          {
+            name: 'departmentID',
+            type: 'list',
+            message: 'Which department do you want to delete?',
+            choices: departments,
+          },
+          {
+            name: 'confirm',
+            type: 'confirm',
+            message: 'Are you sure you want to delete this department?',
+            default: false,
+          },
+        ])
+        .then((answer) => {
+          if (answer.confirm) {
+            connection.query(
+              'DELETE FROM department WHERE id = ?',
+              [answer.departmentID],
+              (err, res) => {
+                if (err) throw err;
+                console.log(`Department was successfully deleted.`);
+                startMenu();
+              }
+            );
+          } else {
+            console.log('No departments were deleted.');
+            startMenu();
+          }
+        });
+    });
+  };
+  
+  const deleteRole = () => {
+    connection.query('SELECT * FROM role', (err, res) => {
+      if (err) throw err;
+      const roles = res.map((role) => ({
+        name: role.title,
+        value: role.id,
+      }));
+      inquirer
+        .prompt([
+          {
+            name: 'roleID',
+            type: 'list',
+            message: 'Which role do you want to delete?',
+            choices: roles,
+          },
+          {
+            name: 'confirm',
+            type: 'confirm',
+            message: 'Are you sure you want to delete this role?',
+            default: false,
+          },
+        ])
+        .then((answer) => {
+          if (answer.confirm) {
+            connection.query(
+              'DELETE FROM role WHERE id = ?',
+              [answer.roleID],
+              (err, res) => {
+                if (err) throw err;
+                console.log(`Role was successfully deleted.`);
+                startMenu();
+              }
+            );
+          } else {
+            console.log('No roles were deleted.');
+            startMenu();
+          }
+        });
+    });
+  };
+  
+  const deleteEmployee = () => {
+    connection.query('SELECT * FROM employee', (err, res) => {
+      if (err) throw err;
+      const employeesNames = res.map((employee) => ({
+        name: `${employee.first_name} ${employee.last_name}`,
+        value: employee.id,
+      }));
+      inquirer
+        .prompt([
+          {
+            name: 'employeeID',
+            type: 'list',
+            message: 'Which employee do you want to delete?',
+            choices: employeesNames,
+          },
+          {
+            name: 'confirm',
+            type: 'confirm',
+            message: 'Are you sure you want to delete this employee?',
+            default: false,
+          },
+        ])
+        .then((answer) => {
+          if (answer.confirm) {
+            connection.query(
+              'DELETE FROM employee WHERE id = ?',
+              [answer.employeeID],
+              (err, res) => {
+                if (err) throw err;
+                console.log(`Employee was successfully deleted.`);
+                startMenu();
+              }
+            );
+          } else {
+            console.log('No employees were deleted.');
+            startMenu();
+          }
+        });
+    });
+  };
