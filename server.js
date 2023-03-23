@@ -62,8 +62,15 @@ const viewAllDepartments = () => {
 };
 
 const viewAllRoles = () => {
-    connection.query('SELECT * FROM role', 
-    function (err, res) {
+    connection.query(`SELECT 
+     e.role_id,
+     r.title,
+     d.name AS department,
+     r.salary
+     FROM employee e
+     JOIN role r ON e.role_id = r.id
+     JOIN department d ON r.department_id = d.id`, 
+     (err, res) => {
         if (err) throw err;
         console.table(res);
         startMenu();
@@ -104,7 +111,7 @@ const addDepartment = () => {
         connection.query(
             'INSERT INTO department (name) VALUES (?)',
             [answer.department],
-            function (err, res) {
+            (err, res) => {
                 if (err) throw err;
                 console.log('Department successfully added!');
                 startMenu();
@@ -267,4 +274,3 @@ const updateEmployeeRole = () => {
     };
 
 
-    
