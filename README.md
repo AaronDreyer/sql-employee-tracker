@@ -30,7 +30,7 @@
 
   ## [Walkthrough Video](#table-of-contents)
 
-  
+  [![Walkthrough Video](https://youtu.be/hjlDn8h0MFI)]
   
   ## [Credits](#table-of-contents)
 
