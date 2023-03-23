@@ -142,21 +142,23 @@ const addRole = () => {
 };
 
 const addEmployee = () => {
-    connection.query('SELECT id, name FROM role', (err, res) => {
+    connection.query('SELECT id, title FROM role', (err, res) => {
         if (err) throw err;
 
         const roleNames = res.reduce((acc, curr) => {
-            acc[curr.name] = curr.id;
+            acc[curr.title] = curr.id;
             return acc;
         }, {});
 
-    connection.query('SELECT id, first_name, last_name FROM employee WHERE manager_id IS NULL', (err, res) => {
+    connection.query('SELECT id, first_name, last_name, manager_id FROM employee', (err, res) => {
         if (err) throw err;
 
-        const managers = res.reduce((acc, curr) => {
-            acc['${curr.first_name} ${curr.last_name}'] = curr.id;
-            return acc;
-        }, {});
+        const managers = {};
+
+        res.forEach((employee) => {
+            const managerName = `${employee.first_name} ${employee.last_name}`;
+            managers[managerName] = employee.id;
+        });
     
         inquirer.prompt([
             {
@@ -204,5 +206,5 @@ const addEmployee = () => {
 };
 
 const updateEmployeeRole = () => {
-    
+    connection.query('SELECT id, ')
 };
