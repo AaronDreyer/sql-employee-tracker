@@ -1,3 +1,4 @@
+-- Department table and corresponding values
 INSERT INTO department (name)
 VALUES ("Management"),
         ("Sales"),
@@ -7,6 +8,7 @@ VALUES ("Management"),
         ("Quality Assurance"),
         ("Office Administration");
 
+-- Role table and corresponding values
 INSERT INTO role (title, salary, department_id)
 VALUES ("Branch Manger", 70000, 1),
         ("Assistant to Branch Manager", 60000, 1),
@@ -17,6 +19,7 @@ VALUES ("Branch Manger", 70000, 1),
         ("QA Director", 50000, 6),
         ("Receptionist", 45000, 7);
 
+-- Employee table and corresponding values
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES ("Michael", "Scott", 1, 1),
         ("Jim", "Halpert", 3, NULL),

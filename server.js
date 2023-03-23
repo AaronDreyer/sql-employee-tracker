@@ -1,7 +1,12 @@
+
+// Linking SQL2, Inquirer, and Console Table to script file
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 
+// Creating MySQL connection object to local host using port and password
+// Also evaluating database being used
+// Sets up details for connection
 const connection = mysql.createConnection({
     host: 'localhost',
     port: 3306,
@@ -10,13 +15,17 @@ const connection = mysql.createConnection({
     database: 'company_db',
 });
 
+// Connection to menu database with greeting and start of menu
+// Creates connection
 connection.connect(err => {
     if (err) throw err;
     console.log("Welcome to the Dunder Mifflin - Scranton Branch Employee Tracker");
     startMenu();
 });
 
+// Start Menu Selection Screen
 const startMenu = () => {
+  // All possible actions within application
     inquirer.prompt({
         message: 'Please choose one of the following:',
         name: 'menu',
@@ -35,6 +44,8 @@ const startMenu = () => {
             'Exit',
         ],
     })
+
+    // Response based on action select using if statement that engages corresponding function
     .then(response => {
         if (response.menu === 'View all departments') {
             viewAllDepartments();
@@ -62,15 +73,22 @@ const startMenu = () => {
     });
 };
 
+// Function to show all departments in database
 const viewAllDepartments = () => {
+  // Use connection,query to engage SQL command that usually is physcially typed out in command line
     connection.query('SELECT * FROM department', function (err, res) {
         if (err) throw err;
+        // console.table displays tables based on response from connection.query
         console.table(res);
         startMenu();
     });
 };
 
+// Function to view all roles within database
 const viewAllRoles = () => {
+  // Uses a different syntax than normal for connection.query
+  // The single letters represent the first letter of each table within seeds.sql. This is then connected to the corresponding label issued in the schema.sql file to display that selected data.
+  // This pulls from the employee table and joins the role table and department table data to it
     connection.query(`SELECT 
      e.role_id,
      r.title,
@@ -86,7 +104,9 @@ const viewAllRoles = () => {
     });
 };
 
+// Function to show all employees
 const viewAllEmployees = () => {
+  // Similar to viewAllRoles, this function uses SQL commands to display select data and joins tables together into a cohesive table display
     connection.query(`
     SELECT 
       e.id, 
@@ -107,7 +127,9 @@ const viewAllEmployees = () => {
     });
 };
 
+// function to add department
 const addDepartment = () => {
+  // Simple prompt to input string for department
     inquirer.prompt([
         {
             name: 'department',
@@ -116,6 +138,7 @@ const addDepartment = () => {
     
         },
     ])
+    // Utilizes a connection.query to insert department into seeds.sql table based on values
     .then(answer => {
         connection.query(
             'INSERT INTO department (name) VALUES (?)',
@@ -129,7 +152,11 @@ const addDepartment = () => {
     });
 };
 
+// Function to add a role
 const addRole = () => {
+  // This is a little different from the function above in that it uses inquirer to rpoduce a list prompt so the user can select from the database
+  // This called for making a object callled departmentNames so the function can pull the department names from the department table and dsiplay them
+  // A problem that occured was the entry of the data; the departments are based on department ids which are integers and the inquirer list inputs string data, so I had to include a function using accumulative and currency to convert department names into their respective department ids upon submission
     connection.query('SELECT id, name FROM department', (err, res) => {
         if (err) throw err;
 
@@ -153,6 +180,7 @@ const addRole = () => {
         name: 'department',
         type: 'list',
         message: 'Please select which department your role is in.',
+        // Pulls from object to display department names in seeds.sql table
         choices: Object.keys(departmentNames),
     }
    ]).then(answer => {
@@ -170,6 +198,8 @@ const addRole = () => {
     });
 };
 
+// Function to add employees
+// This follows the syntax from the above function expect it utilizes two objects to create inquirer lists
 const addEmployee = () => {
     connection.query('SELECT id, title FROM role', (err, res) => {
         if (err) throw err;
@@ -234,6 +264,7 @@ const addEmployee = () => {
     });
 };
 
+// Function to update employee information
 const updateEmployeeRole = () => {
     connection.query('SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employee', (err, res) => {
         if (err) throw err;
@@ -282,9 +313,14 @@ const updateEmployeeRole = () => {
       });
     };
 
+// Extra Credit
+
+// Function to delete a department
+// Similar structure and syntax to adding departments/etc. but uses SQL command DELETE
 const deleteDepartment = () => {
     connection.query('SELECT * FROM department', (err, res) => {
       if (err) throw err;
+      // map() method transforms an array of department objects recieved ina response (res) into a new array of objects
       const departments = res.map((department) => ({
         name: department.name,
         value: department.id,
@@ -297,6 +333,7 @@ const deleteDepartment = () => {
             message: 'Which department do you want to delete?',
             choices: departments,
           },
+          // Confirmation prompt for accessibility
           {
             name: 'confirm',
             type: 'confirm',
@@ -323,6 +360,7 @@ const deleteDepartment = () => {
     });
   };
   
+  // Function to delete a role
   const deleteRole = () => {
     connection.query('SELECT * FROM role', (err, res) => {
       if (err) throw err;
@@ -364,6 +402,7 @@ const deleteDepartment = () => {
     });
   };
   
+  // Function to delete an employee
   const deleteEmployee = () => {
     connection.query('SELECT * FROM employee', (err, res) => {
       if (err) throw err;
