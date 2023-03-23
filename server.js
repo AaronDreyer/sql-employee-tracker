@@ -90,12 +90,11 @@ const viewAllRoles = () => {
   // The single letters represent the first letter of each table within seeds.sql. This is then connected to the corresponding label issued in the schema.sql file to display that selected data.
   // This pulls from the employee table and joins the role table and department table data to it
     connection.query(`SELECT 
-     e.role_id,
+     r.id,
      r.title,
      d.name AS department,
      r.salary
-     FROM employee e
-     JOIN role r ON e.role_id = r.id
+     FROM role r
      JOIN department d ON r.department_id = d.id`, 
      (err, res) => {
         if (err) throw err;

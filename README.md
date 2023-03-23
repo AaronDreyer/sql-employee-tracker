@@ -8,6 +8,7 @@
   * [Installation](#installation)
   * [Usage](#usage)
   * [Credits](#credits)
+  * [Walkthrough Video](#walkthrough-video)
   * [Tests](#tests)
   * [Questions](#questions)
   
@@ -26,6 +27,10 @@
   ## [Usage](#table-of-contents)
 
   In order to operate this application. You need to activate SQL by typing 'mysql -u root -p' in your command line. Once this is done, you can CREATE the comanp_db database and USE it using SQL commands. After that, you need to SOURCE your schema.sql and seeds.sql files using 'SOURCE db/schema.sql' and 'SOURCE db/seeds.sql'. Finally, you can operate the challenge by exiting the SQL by typing 'exit' and starting the application with 'npm start'.
+
+  ## [Walkthrough Video](#table-of-contents)
+
+  
   
   ## [Credits](#table-of-contents)
 
